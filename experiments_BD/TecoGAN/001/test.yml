@@ -12,8 +12,12 @@ dataset:
 
   test1:
     name: Vid4
-    gt_seq_dir: /home/SENSETIME/qianjinhao/program_project/data/Vid4/GT
-    lr_seq_dir: /home/SENSETIME/qianjinhao/program_project/data/Vid4/Gaussian4xLR
+#    gt_seq_dir: /home/SENSETIME/qianjinhao/program_project/data/Vid4/GT
+#    lr_seq_dir: /home/SENSETIME/qianjinhao/program_project/data/Vid4/Gaussian4xLR
+
+    gt_seq_dir: /mnt/lustre/qianjinhao/program_project/data/Vid4/GT
+    lr_seq_dir: /mnt/lustre/qianjinhao/program_project/data/Vid4/Gaussian4xLR
+
     filter_file: ~
     num_workers: 4
     pin_memory: true
