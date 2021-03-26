@@ -138,11 +138,11 @@ if __name__ == '__main__':
     # run
     if osp.exists(lmdb_dir):
         print('Dataset [{}] already exists'.format(args.dataset))
-        print('Checking the LMDB dataset ...')
+        # print('Checking the LMDB dataset ...')
         # check_lmdb(args.dataset, lmdb_dir)
     else:
         create_lmdb(args.dataset, raw_dir, lmdb_dir, filter_file)
 
-        print('Checking the LMDB dataset ...')
+        # print('Checking the LMDB dataset ...')
         # check_lmdb(args.dataset, lmdb_dir)
 
