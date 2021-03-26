@@ -21,7 +21,7 @@ if [ ! -d "${path}/logs/${jobname}" ]; then
   mkdir -p ${path}/logs/${jobname} 
 fi
 
-sbatch_file=sbatch.sh
+sbatch_file=sbatch_run.sh
 touch ${sbatch_file}
 cat > ${sbatch_file} <<'endmsg'
 #!/bin/bash
