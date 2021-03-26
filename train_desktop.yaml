@@ -1,0 +1,316 @@
+NAME: 'SAMPLE CONFIG'
+PHASE: Train
+num_workers: 16
+batch_size: 1
+input_nc: 2
+output_nc: 1
+DEBUG: False
+DEBUG_LEN: 10
+result_path: './result/test_1128'
+shuffle_flag: False
+local_training: False
+local_training_epoch: 10
+
+memcache:
+          server: False
+          server_path : '/mnt/lustre/share/memcached_client/server_list.conf'
+          client_path : 'mc_pytorch/client.conf'
+
+Training_Config:
+                FFHQ_standard: False
+                FFHQ_image_list: "/mnt/lustre/share_data/yangdingdong/FFHQ/image_list.pkl"
+                FFHQ_root: "/mnt/lustre/share_data/yangdingdong/FFHQ_flat_bt"
+                start_idx: 0
+                epoch: 600
+                save_snapshot_epochs: 1
+                loss_show_iters: 5
+                image_show_iters: 100
+                image_size: [896, 896]
+                G_iters: 1
+                D_iters: 1
+                multi_scale: False 
+                sep_scale: False
+                random_crop: True
+#                random_crop: False
+                crop_prob: 0.15
+                crop_size: 600
+                diffaugment: "color,translation,cutout"
+                disable_DNet_resume: False
+                distill_gt: False 
+                warp:
+                    USE_KEYPOINT: False  # Use keypoint to warp reference image
+                    warp_type: 'warpnet'
+                    warpnet_path: 'warpnet_model/512/improve/wrapnet-epoch-8.pkl'
+                scales_weight: [1.0, 1.0, 1.0, 1.0]
+                YellowStyleGAN: False 
+                yellow_stylegan_root: '/mnt/lustre/share_data/yangdingdong/generated_yellow-stylegan2'
+                new_data_1792: False
+                new_data_1792_root: '/mnt/lustre/share_data/yangdingdong/high_res_longterm_from_0622_st_bt'
+                use_glasses_data: False
+                glasses_data_path: '/mnt/lustre/share_data/yangdingdong/put_on_glasses_bt'
+                
+                Generator: 
+                          Net: LocalGenerator
+                          Model_path: 'None'
+                          force_load: True
+                          args: 
+                                use_bn: False
+                                use_in: False 
+                                channel_multiplier: 2
+                                normalization_type: ['InstanceNorm','InstanceNorm']
+                                conv_func: 'equalization_Conv'
+                                use_deep_feature: False
+                                target_layer: 2
+                                use_skip_link: True
+                                link_layer: [4,8,16,32,64,128,256,512]
+                                use_guide_style: False
+                                guide_feature_res: [1]
+                                encoder_norm: 'None'
+                                sample_type: 'Nearest'
+                                noise_layer: [2,4,8,16,32,64]
+                                concat_noise: False
+                                Truncate_latent: 1.0
+                                use_moving_avg_lvc: False
+                                finetuning_fade: False
+                                load_fix_encoder: False
+                                load_old_model: False
+                                use_resl_decay: False
+                                PG_GAN_INTERVAL: 20
+                                add_noise_flag: ['None', 'None']
+                                use_fade_in: True
+                                fix_encoder: False
+                                vae_training: False
+                                use_warp: False            # use warp operation in feature space
+                                warped_type: 'concat'    # feature mix type
+                                upsample: 'pixelshuffle'  # upsample method of generator
+                                ngf: 16                   # generators base channels
+                                n_blocks: 9            # num of resblocks
+                                AdaIn: False               # use Style Encoder and AdaIn or not
+                                weight_norm: False               # use Style Encoder and AdaIn or not
+                                g_ortho: 1e-4   # use orthogonality reg
+                                norm_layer: 'None'   # normlization type, IN, BN, None
+                                rrdb: False   # normlization type, IN, BN, None
+                                use_mask: False
+                                n_downsampling: 3
+                                efficient: True
+                                padding_type: 'zero' # padding type: zero reflect
+                                warp_only_from_outside: False
+                                refinement: False
+                                fake_attention: True
+                                bilinear_downsample: False
+                                shuffle_mode: 'caffe'
+                                out_efficient: True
+                                use_strength_in_loss: False
+                                use_strength_per_loss: False
+                                multi_scale_output: False
+                                shortcut: True
+                                residual: '1'
+                                local_residual: True
+                                resnet_scale: True
+                                to_rgb: True
+                                linear_out: True
+                                channel_scale: 4
+                                divide_ratio: False
+                                new_modelupsample: True
+                                new_modeldownsample: True
+                                local_scale: True
+                                enhance_only: True
+                                blur_layer: False 
+                                use_attention: False
+                                blur_up: False 
+                                blur_down: False
+                                #activation: 'leakyrelu'
+                                #pretrain_model: 'snapshot/compress_157_yuv/GNet/GNet-epoch-10_s.pkl'
+                                
+                                
+                          Schedule: 
+                                    optimizor: Adam
+                                    args: {'learning_rate': 1e-4,
+                                          'betas': 0.5,
+                                          'learning_rate_decay_op': 1.0,
+                                          'use_resl_decay': 0,
+                                          'update_epoch': -1,
+                                          'niter_decay': 40, 
+                                          }
+
+                Discrimator:
+                          Net: MultiscaleDiscriminator
+                          Net_ac: # add a auxiliary gan loss, default is realness gan loss
+                                use_ac: False
+                                args: {
+                                'getIntermFeat': False,
+                                'n_layers': 4,
+                                'dresblock': False,
+                                'realness_gan': False,
+                                'stddev': False
+                            }
+                          args: {
+                                  # 'input_channel': 2,
+                                  'c_gan_global': True,
+                                  'c_gan_local': True,
+                                  'conv_func': 'equalization_Conv',
+                                  'fc_type': 'equalization_Linear',
+                                  'use_minibatchMethod': True,
+                                  'class_num': 0,
+                                  'succesiv_conv': 2,
+                                  'resize': True,
+                                  'image_size': 896,
+                                  'finetuning_fade': False,
+                                  'use_relativistic': False,
+                                  'ndf': 32,                   # discriminators base channels
+                                  'num_scales': 1,             # how many scales to you in discriminators
+                                  'num_D': 1,
+                                  'getIntermFeat': True,
+                                  'use_sn': True,              # use spectral normalization
+                                  'd_ortho': 1e-4,   # use orthogonality reg
+                                  'use_attention': False,   # use orthogonality reg
+                                  'n_layers': 6,   # layers in Discriminator, default is 3
+                                  'dresblock': True,   # resnet D
+                                  'norm_layer': 'None',
+                                  'use_sigmoid': False,
+                                  'realness_gan': True,
+                                  'dense_connect': False,
+                                  'projection': True,
+                                  'blur_layer': False,
+                                  'stddev': True,
+                                  'conditional_dis': True,
+                                  'pretrain_model': '/home/SENSETIME/qianjinhao/program_project/GFRNet-pytorch-beta/snapshot/DNet-epoch-30.pkl'
+                                }
+                          Schedule:
+                                    optimizor: Adam
+                                    args: {
+                                          'learning_rate': 1e-4,
+                                          'betas': 0.5,
+                                          'learning_rate_decay_op': 1.0,
+                                          'use_resl_decay': 0,
+                                          'update_epoch': -1,
+                                          'niter_decay': 40, 
+                                          }
+                                          
+                loss:
+                      {
+#                        'L1_loss'  : {'weight': 100.0},
+#                        #'Nonsaturate_GAN_loss' : {'weight': 4},
+#                        'Realness_GAN_loss' : {'weight': 2.},
+#                        'VGGLoss' : {'weight': 0.5,
+#                        "weights_cx_average": False, 'cx_h': [0.1, 0.2],
+#                        'gt_cx_level': [3, 4], 'ref_cx_level': [1, 2, 3, 4],
+#                        'content_bias': 1.8,
+#                        'weight_vgg': 1, 'weight_cx': 1.4, 'cx_loss_type': 'cx',
+#                        'use_cx': True, 'norm_input': False, 'avg_pooling': False, 'dual': True,
+#                        'use_texture': True
+#                                    },
+#                        #'PatchCSLoss': {'weight': 1, 'patch_size': 16, 'stride': 16,},
+#                        #'SpectralLoss': {'weight': 0.00001},
+#                        'R1_loss': {'weight': 1},
+#                        #'TVRLoss': {'weight': 0.0001, 'lp_reg':True, 'weight_tv': 0.00001, 'weight_reg': 0.1},
+#                        'FeatMatchLoss': {'weight': 10, 'n_layers': 6, 'num_D': 1},
+#                        'SPLLoss': {'weight': 0.2},
+#                        'MS_SSIMLoss': {'weight': 0.1, 'channel': 1,
+#                        'window_size': 11, 'scale_factor': 1.0, 'neg_optim': False},
+
+                        'L1_loss': { 'weight': 100.0 },
+                        #'Nonsaturate_GAN_loss' : {'weight': 4},
+                        'Realness_GAN_loss': { 'weight': 2. },
+                         'VGGLoss' : {'weight': 0.5,
+                         "weights_cx_average": False, 'cx_h': [0.1, 0.2],
+                         'gt_cx_level': [3, 4], 'ref_cx_level': [1, 2, 3, 4],
+                         'content_bias': 1.8,
+                         'weight_vgg': 1, 'weight_cx': 1.4, 'cx_loss_type': 'cx',
+                         'use_cx': True, 'norm_input': False, 'avg_pooling': False, 'dual': True,
+                         'use_texture': True
+                                     },
+                        'PatchCSLoss': { 'weight': 1, 'patch_size': 16, 'stride': 16, },
+                        #'SpectralLoss': {'weight': 0.00001},
+                        'R1_loss': {'weight': 1},
+                        #'TVRLoss': {'weight': 0.0001, 'lp_reg':True, 'weight_tv': 0.00001, 'weight_reg': 0.1},
+                        'FeatMatchLoss': { 'weight': 10, 'n_layers': 6, 'num_D': 1 },
+                        'SPLLoss': { 'weight': 0.2 },
+                        'MS_SSIMLoss': {'weight': 0.1, 'channel': 1,
+                        'window_size': 11, 'scale_factor': 1.0, 'neg_optim': False},
+
+
+                      }
+
+
+                Data_Distribution:
+                                Type: 'pair'
+                                Ratio: 1.0 
+                
+
+                Optimization_Method: 
+                                    Type: 'ADAMW'
+                                    args: {'lr_recnet': 1e-4,
+                                          'lr_global': 1e-4,
+                                          'lr_local': 1e-4,
+                                          'betas': 0.9,
+                                          'learning_rate_decay_op': 1.0,
+                                          'use_resl_decay': 0,
+                                          }
+
+                Eval_Method:
+                            Type: ['PSNR_GLOBAL', 'SSIM']
+
+pair_data:
+          path: '/home/SENSETIME/qianjinhao/'
+          mask_path: ''
+          cross_id: True
+          normalize: True # normalize the data to [-1, 1], default is True
+          enhance_detail: True # enahnce GT
+          real_noise_prob: 0.
+          distortion: 
+                      online: True
+                      haze_flag: True 
+                      dark:
+                          prob: 0.2
+                          strength: [1.5, 2, 2.5, 3, 3.5] 
+                      strength: 
+                                #Beautify: [0.08, 1.2]
+                                Down: [1,6]
+                                Noise: [0,3]
+                                Blur: [0,8]
+                                Defocus: [3, 13]
+                                Motion: [2, 9]
+                                high: False
+                                non_local_mean: True
+                                freq_denoise: False
+                      fix_distortion: 0
+          ground_truth_list: [
+                              'dataset/data_list/train_gt_new_part1_merge.txt',
+          ]
+          use_guide: True
+          reference_list: [
+                           'dataset/data_list/train_ref_new_part1.txt',
+          ]
+          wash_data:
+                    Flag: True
+                    data_list : [
+                        './utils/wash_data_list/1.txt', 
+                        './utils/wash_data_list/2.txt',
+                        './utils/wash_data_list/3.txt',
+                        './utils/wash_data_list/4.txt',
+                        ]
+
+          region: 
+                USE_REGION: False
+                Name: 'eye'
+                suffix_region: {'eye': ['_eye_left', '_eye_right'],
+                                'mouth': ['_mouth'],
+                                'eyebrow': ['_left_eyebrow','_right_eyebrow'],
+                               }
+          suffix: '_Src_Crop_1024'
+
+unpair_data:
+          use_unpair_data: False
+          path: '/mnt/lustre/share/wanghaoran/data2/'
+          real_data_list: ['dataset/data_list/real_distortion_0221_test.txt']
+          region: 
+                USE_REGION: False
+                Name: 'eye'
+                suffix_region: {'eye': ['_eye_left', '_eye_right'],
+                                'mouth': ['_mouth'],
+                                'eyebrow': ['_left_eyebrow','_right_eyebrow'],
+                               }
+          suffix: '_crop_285_512'
+          sample: 50
+
