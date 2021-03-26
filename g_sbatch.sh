@@ -3,9 +3,9 @@
 # create sbatch_run.sh 
 
 
-if [ "$#" -ne 3 ]; then 
+if [ "$#" -ne 5 ]; then
     echo "########################################################" 
-    echo " Usage: ./g_sbatch [jobname] [gpu_num] [node_name] [other]." 
+    echo " Usage: ./g_sbatch [jobname] [gpu_num] [node_name] [degradation] [model]."
     echo "########################################################" 
     exit 1 
 fi 
