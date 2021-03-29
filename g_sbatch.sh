@@ -35,7 +35,7 @@ endmsg
 degradation=$4
 model=$5
 exp_id=001
-gpu_id=0
+gpu_id=7
 
 
 # retain training or train from scratch
@@ -65,7 +65,7 @@ echo "#SBATCH --gres=gpu:$2" >> ${sbatch_file}
 echo "#SBATCH --nodelist=$3" >> ${sbatch_file}
 echo "#SBATCH --job-name=${jobname}" >> ${sbatch_file} 
 echo "#SBATCH -o ${path}/logs/${jobname}/%j.txt" >> ${sbatch_file} 
-echo "srun --mpi=pmi2  python  codes/main.py --exp_dir ${exp_dir}  --mode train --model ${model} --opt train${suffix}.yml --gpu_id ${gpu_id}" >> ${sbatch_file}
+echo "srun --mpi=pmi2  python  codes/main.py --exp_dir ${exp_dir}  --mode train --model ${model} --opt train${suffix}.yml --gpu_id ${gpu_id} > ${exp_dir}/train/train${suffix}.log  2>&1 & " >> ${sbatch_file}
 echo "echo \"Submit the ${jobname} job by run \'sbatch\'\" " >>  ${sbatch_file}
 
 cat sbatch_run.sh
