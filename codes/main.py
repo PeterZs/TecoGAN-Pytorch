@@ -65,7 +65,7 @@ def train(opt):
             # prepare data
             # data = prepare_data(opt, data, kernel)
 
-            yaml_path = r'/mnt/lustre/qianjinhao/program_project/TecoGAN-PyTorch/train_desktop.yaml'
+            yaml_path = r'train_desktop.yaml'
             f = open(yaml_path, 'r')
             config = edict(yaml.load(f, Loader=yaml.FullLoader))
 
