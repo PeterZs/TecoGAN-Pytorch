@@ -10,7 +10,7 @@ import cv2
 import numpy as np
 
 
-def create_lmdb(dataset, raw_dir, lmdb_dir, filter_file=''):
+def create_lmdb(dataset, raw_dir, lmdb_dir, filter_file='',num=10):
     assert dataset in ('VimeoTecoGAN', 'VimeoTecoGAN-sub'), \
         'Unknown Dataset: {}'.format(dataset)
     print('Creating lmdb dataset: {}'.format(dataset))
@@ -20,8 +20,9 @@ def create_lmdb(dataset, raw_dir, lmdb_dir, filter_file=''):
         with open(filter_file, 'r') as f:
             seq_dir_lst = sorted([line.strip() for line in f])
     else:
-        seq_dir_lst = sorted(os.listdir(raw_dir))
-    print('Number of sequences: {}'.format(len(seq_dir_lst)))
+        seq_dir_lst = sorted(os.listdir(raw_dir))[:num]
+    # print('Number of sequences: {}'.format(len(seq_dir_lst)))
+    print('Number of sequences: {}'.format(str(num)))
 
     # compute space to allocate
     print('Calculating space needed for LMDB generation ... ', end='')
@@ -141,7 +142,7 @@ if __name__ == '__main__':
         # print('Checking the LMDB dataset ...')
         # check_lmdb(args.dataset, lmdb_dir)
     else:
-        create_lmdb(args.dataset, raw_dir, lmdb_dir, filter_file)
+        create_lmdb(args.dataset, raw_dir, lmdb_dir, filter_file,num=500)
 
         # print('Checking the LMDB dataset ...')
         # check_lmdb(args.dataset, lmdb_dir)
