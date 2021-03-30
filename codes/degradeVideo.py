@@ -5,7 +5,7 @@ import cv2
 import random
 import os
 import shutil
-import numpy as np
+
 
 yaml_path = r'./train_desktop.yaml'
 
